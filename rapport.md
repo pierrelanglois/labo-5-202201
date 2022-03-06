@@ -1,7 +1,7 @@
 
 ------------------------------------------------------------------------
 
-# INF3500 - labo 4 - hiver 2022
+# INF3500 - labo 5 - hiver 2022
 # Équipe **nom-d-équipe-ici**
 
 Membre #1 : **nom, prénom, matricule**
@@ -31,7 +31,7 @@ Nous utilisons la carte Basys 3.
 Nous utilisons la carte Nexys A7-50T.
 Nous utilisons la carte Nexys A7-100T.
 
-Voici un lien vers notre fichier de configuration final : [top_labo_4.bit](synthese-implementation/top_labo_4.bit)
+Voici un lien vers notre fichier de configuration final : [top_labo_5.bit](synthese-implementation/top_labo_5.bit)
 
 Voici les ressources utilisées par notre système :
 Quoi | Slice LUTs | Slice Registers | F7 Muxes | F8 Muxes | Bonded IOB
