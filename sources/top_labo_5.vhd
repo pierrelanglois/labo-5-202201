@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 -- 
--- top_labo_4.vhd
+-- top_labo_5.vhd
 --
--- v. 1.0 Pierre Langlois 2022-02-25
+-- v. 1.0 Pierre Langlois 2022-03-06
 --
 -- Digilent Basys 3 Artix-7 FPGA Trainer Board 
 --
@@ -14,7 +14,7 @@ use ieee.numeric_std.all;
 use work.utilitaires_inf3500_pkg.all;
 use work.all;
 
-entity top_labo_4 is
+entity top_labo_5 is
     port(
         clk : in std_logic;                        -- l'horloge de la carte à 100 MHz
         sw : in std_logic_vector(15 downto 0);     -- les 16 commutateurs
@@ -29,7 +29,7 @@ entity top_labo_4 is
     );
 end;
 
-architecture arch of top_labo_4 is
+architecture arch of top_labo_5 is
 
     signal clk_50_Hz : std_logic;
     
