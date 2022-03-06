@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Généré par Microsoft Visio, SVG Export racine-carree-module.svg Page 1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="1.50333in" height="1.12833in" viewBox="0 0 108.24 81.24" xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st7">
+	<title>portesLogiques</title>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st3 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st4 {fill:#000000;font-family:Arial;font-size:0.499992em}
+		.st5 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st6 {font-size:1em}
+		.st7 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g>
+		<title>Page 1</title>
+		<g id="shape41-1" transform="translate(0.12,-0.12)">
+			<title>Feuille.41</title>
+			<rect x="0" y="0.240001" width="108" height="81" class="st1"/>
+		</g>
+		<g id="group15-3" transform="translate(27.12,-18.12)">
+			<title>Feuille.15</title>
+			<g id="shape16-4">
+				<title>Feuille.16</title>
+				<rect x="0" y="27.24" width="54" height="54" class="st1"/>
+			</g>
+			<g id="shape17-6" transform="translate(5.79357E-06,-5.625)">
+				<title>Feuille.17</title>
+				<path d="M0 74.49 L4.22 77.86 L0 81.24" class="st2"/>
+			</g>
+		</g>
+		<g id="shape27-9" transform="translate(27.12,-18.12)">
+			<title>Feuille.27</title>
+			<desc>reset</desc>
+			<rect x="0" y="72.24" width="54" height="9.00001" class="st3"/>
+			<text x="20.33" y="78.64" class="st4">reset</text>		</g>
+		<g id="shape28-12" transform="translate(28.245,-58.62)">
+			<title>Feuille.28</title>
+			<desc>A</desc>
+			<rect x="0" y="72.24" width="16.5938" height="9.00001" class="st3"/>
+			<text x="1" y="78.64" class="st4">A</text>		</g>
+		<g id="shape29-15" transform="translate(28.245,-40.62)">
+			<title>Feuille.29</title>
+			<desc>go</desc>
+			<rect x="0" y="72.24" width="16.5938" height="9.00001" class="st3"/>
+			<text x="1" y="78.64" class="st4">go</text>		</g>
+		<g id="shape30-18" transform="translate(63.12,-58.62)">
+			<title>Feuille.30</title>
+			<desc>X</desc>
+			<rect x="0" y="72.24" width="16.5938" height="9.00001" class="st3"/>
+			<text x="11.59" y="78.64" class="st4">X</text>		</g>
+		<g id="shape31-21" transform="translate(63.12,-40.62)">
+			<title>Feuille.31</title>
+			<desc>fini</desc>
+			<rect x="0" y="72.24" width="16.5938" height="9.00001" class="st3"/>
+			<text x="7.92" y="78.64" class="st4">fini</text>		</g>
+		<g id="shape32-24" transform="translate(9.12,-63.12)">
+			<title>Feuille.32</title>
+			<desc>N /</desc>
+			<path d="M0 81.24 L18 81.24" class="st5"/>
+			<text x="6.83" y="75.84" class="st4">N <tspan x="8.17" dy="1.2em" class="st6">/</tspan></text>		</g>
+		<g id="shape33-29" transform="translate(9.12,-45.12)">
+			<title>Feuille.33</title>
+			<path d="M0 81.24 L18 81.24" class="st2"/>
+		</g>
+		<g id="shape34-32" transform="translate(9.12,-27.12)">
+			<title>Feuille.34</title>
+			<path d="M0 81.24 L18 81.24" class="st2"/>
+		</g>
+		<g id="shape35-35" transform="translate(81.12,-63.12)">
+			<title>Feuille.35</title>
+			<desc>M /</desc>
+			<path d="M0 81.24 L18 81.24" class="st5"/>
+			<text x="6.5" y="75.84" class="st4">M <tspan x="8.17" dy="1.2em" class="st6">/</tspan></text>		</g>
+		<g id="shape36-40" transform="translate(81.12,-45.12)">
+			<title>Feuille.36</title>
+			<path d="M0 81.24 L18 81.24" class="st2"/>
+		</g>
+		<g id="shape37-43" transform="translate(9.12,-9.11999)">
+			<title>Feuille.37</title>
+			<path d="M45 72.24 L45 81.24 L0 81.24" class="st2"/>
+		</g>
+	</g>
+</svg>
