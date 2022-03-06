@@ -4,14 +4,14 @@
 <td><img src="figures\Polytechnique_signature-RGB-gauche_FR.png" alt="Logo de Polytechnique Montréal"></td>
 <td><h2>INF3500 - Conception et réalisation de systèmes numériques
 <br><br>Hiver 2022
-<br><br>Laboratoire #4 : Conception de chemins des données
+<br><br>Laboratoire #5 : Communications avec la carte
 </h2></td>
 </tr>
 </table>
 
 ----------------------------------------------------------------------------------------------
 
-# Le calcul de la racine carrée par la méthode de Newton
+# Un titre intelligent ici
 
 ----------------------------------------------------------------------------------------------
 
