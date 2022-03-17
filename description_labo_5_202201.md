@@ -76,7 +76,7 @@ Les communications série entre l'ordinateur (via l'utilitaire PuTTY) et la cart
 Suivez les étapes suivantes :
 - Créez un répertoire "inf3500\labo5\" dans lequel vous mettrez tous les fichiers de ce laboratoire.
 - Importez tous les fichiers du laboratoire à partir de l'entrepôt Git et placez-les dans votre répertoire \labo5\.
-- Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](\synthese-implementation\labo_5_synth_impl.tcl).
+- Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](synthese-implementation/labo_5_synth_impl.tcl).
 - Lancez PuTTY ou votre programme de communications série et configurez-le tel que montré dans la partie 0.
 
 Placez le commutateur 0 en position vers le haut (1) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY.
