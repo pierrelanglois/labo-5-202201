@@ -32,11 +32,13 @@ Voici, en un paragraphe pour chacun, le rôle et le fonctionnement de chacun des
 
 Voici notre analyse des lignes de code VHDL suivantes.
 
-`signal c1, c2 : character;`
-`signal r1, r2 : std_logic_vector(7 downto 0);`
-`...`
-`r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));`
-`c2 <= character'val(to_integer(unsigned(r2)));`
+```
+signal c1, c2 : character;
+signal r1, r2 : std_logic_vector(7 downto 0);
+...
+r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));
+c2 <= character'val(to_integer(unsigned(r2)));
+```
 
 La fonction `character_to_hex()` se trouve  ....
 
@@ -45,17 +47,17 @@ La fonction `character_to_hex()` se trouve  ....
 
 Voici les modifications que nous avons apportées aux fichiers.
 
-* fichier1.vhd
-- ceci
-- cela
+- fichier1.vhd
+    - ceci
+    - cela
 
-* fichier2.vhd
-- ceci
-- cela
+- fichier2.vhd
+    - ceci
+    - cela
 
-* fichier3.vhd
-- ceci
-- cela
+- fichier3.vhd
+    - ceci
+    - cela
 
 
 ## Partie 3 : Bonus
