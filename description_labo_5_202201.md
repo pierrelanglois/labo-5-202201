@@ -173,8 +173,8 @@ Partie 1 : Analyse du code | 6
 Partie 2 : Avec votre module de la racine carrée | 9
 Qualité, lisibilité et élégance du code : alignement, choix des identificateurs, qualité et pertinence des commentaires, respect des consignes de remise incluant les noms des fichiers, orthographe, etc. | 2
 **Pleine réussite du labo** | **17**
-Bonus partie 3a., contrôle des erreurs | 2
-Bonus partie 3b., affichage des résultats sur le terminal | 1
+Bonus partie 3a., contrôle des erreurs | 1.5
+Bonus partie 3b., affichage des résultats sur le terminal | 1.5
 **Maximum possible sur 20 points** | **20**
 
 
