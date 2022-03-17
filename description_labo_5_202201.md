@@ -36,7 +36,7 @@ Dans cet exercice de laboratoire, on exploite la communication série entre un o
 
 La communication série (un bit à la fois) avec la carte et le FPGA qui s'y trouve se fait par l'entremise du même câble qui sert aussi pour l'alimentation de la carte et pour la programmation du FPGA. Du côté de l'ordinateur, on utilise un port COM. Pour les ordinateurs contemporains et la plupart des ordinateurs portables, ce port COM est physiquement relié à un port USB.
 
-De chaque côté de la communication série, on utilise un dispositif appelé [Universal Asynchronous Receiver Transmitter (UART)](https://fr.wikipedia.org/wiki/UART). Les UART communiquent entre eux par deux fils, chacun permettant de transmettre vers ou bien recevoir de l'autre UART. Les signaux sur ces files respectent [une norme comme la RS-232](https://fr.wikipedia.org/wiki/RS-232). 
+De chaque côté de la communication série, on utilise un dispositif appelé [Universal Asynchronous Receiver Transmitter (UART)](https://fr.wikipedia.org/wiki/UART). Les UART communiquent entre eux par deux fils, chacun permettant de transmettre vers ou bien recevoir de l'autre UART. Les signaux sur ces fils respectent [une norme comme la RS-232](https://fr.wikipedia.org/wiki/RS-232). 
 
 Les cartes Basys 3 et Nexys A7 ont des puces qui font le pont entre les connecteurs de la carte et des pattes spécifiques du FPGA (sur la Basys 3, ce sont A18 pour transmettre vers l'ordinateur, et B18 pour recevoir de l'ordinateur). Ces puces respectent la norme RS-232.
 
@@ -46,11 +46,11 @@ Vous aurez besoin d'un utilitaire de communications série sur votre ordinateur.
 
 Un [bon utilitaire gratuit pour Windows est PuTTY](https://putty.org/). Des [versions pour Linux et pour Mac](https://www.ssh.com/academy/ssh/putty), sont disponibles en ligne mais n'ont pas été testées pour ce laboratoire.
 
-Sous Windows, vous devez d'abord établir quel port COM utiliser. Voici un exemple pour lequel le port est COM4. *Vous devez choisir le port COM qui correspond à votre situation.*
+Vous devez d'abord établir quel port COM est disponible sur votre machine. Voici un exemple avec  Windows, pour lequel le port est COM4. *Vous devez identifier le port COM qui correspond à votre situation.*
 
 <img src="figures/windows-gestionnaire-peripheriques-ports-com.png" alt="port COM sous Windows" width="600">
 
-Configurez ensuite PuTTY comme suit :
+Configurez ensuite PuTTY comme suit, avec le numéro de port COM trouvé à l'étape précédente :
 
 <table>
 <tr>
@@ -65,7 +65,7 @@ Configurez ensuite PuTTY comme suit :
 
 Dans la fenêtre pour "Session", vous pouvez sauvegarder vos paramètres avec le bouton Save, avec un nom représentatif comme "Basys3", "FPGA", ou "INF3500-est-mon-cours-prefere".
 
-Cliquez sur le bouton "Open" pour lancer une session. À partir de ce moment, tous les caractères  tapés dans la fenêtre de terminal sont envoyés sur le port COM spécifié. Comme on a choisi l'option "Force on" sous "Local echo", ces caractères apparaissent aussi à l'écran. Tous les caractères reçus sur le port COM sont aussi affichés dans la fenêtre.
+Cliquez sur le bouton "Open" pour lancer une session. À partir de ce moment, tous les caractères  tapés dans la fenêtre de terminal sont envoyés sur le port COM spécifié, vers la carte FPGA. Comme on a choisi l'option "Force on" sous "Local echo", ces caractères apparaissent aussi à l'écran. Tous les caractères transmis par le FPGA et reçus sur le port COM sont aussi affichés dans la fenêtre.
 
 ## Le code ASCII
 
@@ -76,7 +76,7 @@ Les communications série entre l'ordinateur (via l'utilitaire PuTTY) et la cart
 Suivez les étapes suivantes :
 - Créez un répertoire "inf3500\labo5\" dans lequel vous mettrez tous les fichiers de ce laboratoire.
 - Importez tous les fichiers du laboratoire à partir de l'entrepôt Git et placez-les dans votre répertoire \labo5\.
-- Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](labo_5_synth_impl.tcl).
+- Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](\synthese-implementation\labo_5_synth_impl.tcl).
 - Lancez PuTTY ou votre programme de communications série et configurez-le tel que montré dans la partie 0.
 
 Placez le commutateur 0 en position vers le haut (1) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY.
@@ -107,13 +107,15 @@ Décrivez en un paragraphe le rôle et le fonctionnement de chacun des modules s
 
 Expliquez ce que font les lignes de code VHDL suivantes et décortiquez chacune des opérations réalisées.
 
-`signal c1, c2 : character;`
-`signal r1, r2 : std_logic_vector(7 downto 0);`
-`...`
-`r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));`
-`c2 <= character'val(to_integer(unsigned(r2)));`
+```
+signal c1, c2 : character;
+signal r1, r2 : std_logic_vector(7 downto 0);
+...
+r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));
+c2 <= character'val(to_integer(unsigned(r2)));
+```
 
-Où se trouve la fonction `character_to_hex()` ?
+Où se trouve la définition de la fonction `character_to_hex()` ?
 
 ### À remettre
 

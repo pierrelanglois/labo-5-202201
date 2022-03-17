@@ -40,7 +40,7 @@ r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));
 c2 <= character'val(to_integer(unsigned(r2)));
 ```
 
-La fonction `character_to_hex()` se trouve  ....
+La définition de la fonction `character_to_hex()` se trouve  ....
 
 
 ## Partie 2
@@ -65,6 +65,15 @@ Voici les modifications que nous avons apportées aux fichiers.
 *Faire un choix et garder seulement une option.*
 - Nous n'avons pas complété le bonus. Nous nous concentrons sur notre réussite dans ce cours et dans d'autres.
 - Nous sommes vraiment en avance dans nos études, dans ce cours et tous les autres, et nous adorons les défis dans ce cours, donc nous avons complété une ou plusieurs parties du bonus.
+
+### Partie 3a
+
+Notre approche consiste à ...
+
+### Partie 3b
+
+Notre approche consiste à ...
+
 
 
 ## Observations et discussion générale
