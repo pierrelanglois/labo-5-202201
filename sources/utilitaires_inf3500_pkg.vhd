@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
--- 
+--
 -- utilitaires_inf3500_pkg.vhd
 -- Déclarations et fonctions utilitaires pour le cours INF3500
 --
@@ -11,15 +11,16 @@
 --                    _2_ devient _to_
 -- v. 1.4, 2021-01-23 ajout de la fonction bool2stdl()
 --                    modifications mineures au texte, fonction unsigned_to_BCD
--- v. 1.5, 2022-01-07 ajout de la fonction compte_valeurs
+-- v. 1.5, 2022-01-07 ajout de la fonction compte_valeurs()
 --                    modification du nom de la fonction indice_Base64_to_character
+-- v. 1.6, 2022-03-10 ajout de la fonction character_to_std_logic_vector()
+-- v. 1.7, 2022-03-17 ajout des fonctions resize(s, n, c) et character_to_hex(c)
 --
--- 
 ---------------------------------------------------------------------------------------------------
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
-use ieee.numeric_std.all;  
+use ieee.numeric_std.all;
 
 package utilitaires_inf3500_pkg is
 
@@ -27,34 +28,39 @@ package utilitaires_inf3500_pkg is
     subtype quartet_signed is signed(3 downto 0);
     subtype quartet_unsigned is unsigned(3 downto 0);
     subtype segments is std_logic_vector(7 downto 0);
-    
+
     subtype BCD is quartet;
 
-    subtype BCD1 is unsigned(3 downto 0); -- un chiffre décimal BCD
-    subtype BCD2 is unsigned(7 downto 0); -- deux chiffres décimaux BCD, ex. 58 : 0101_1000
+    subtype BCD1 is unsigned(3 downto 0);  -- un chiffre décimal BCD
+    subtype BCD2 is unsigned(7 downto 0);  -- deux chiffres décimaux BCD, ex. 58 : 0101_1000
     subtype BCD3 is unsigned(11 downto 0); -- trois chiffres décimaux BCD, ex. 907 : 1001_0000_0111
-    
-    type quatre_symboles is array(3 downto 0) of segments; 
-    
+
+    type quatre_symboles is array(3 downto 0) of segments;
+
     function hex_to_7seg(chiffre_hex: quartet) return segments;
     function hex_to_7seg(chiffre_hex: quartet_signed) return segments;
     function hex_to_7seg(chiffre_hex: quartet_unsigned) return segments;
 
     function BCD_to_7seg(chiffre_bcd: BCD) return segments;
-    
+
     function unsigned_to_BCD(nombre : unsigned(9 downto 0)) return BCD3;
-    
+
     function character_to_7seg(caractere: character) return segments;
-    
+    function character_to_std_logic_vector(caractere: character) return std_logic_vector;
+
     function indice_Base64_to_character(indice: natural range 0 to 63) return character;
-    
+
     function hex_to_character(chiffre_hex: natural range 0 to 15) return character;
     function hex_to_character(chiffre_hex: quartet_unsigned) return character;
-    
+
+    function character_to_hex(c : character) return quartet_unsigned;
+
     function bool2stdl(b : boolean) return std_logic;
-    
+
     function compte_valeurs(s : std_logic_vector; v : std_logic) return natural;
-    
+
+    function resize(s : string; n : positive; c : character) return string;
+
 end package;
 
 package body utilitaires_inf3500_pkg is
@@ -64,12 +70,12 @@ package body utilitaires_inf3500_pkg is
     -- décodeur pour caractères hexadécimaux vers affichage à 7 segments (8 bits incluant le point)
     -- correspondances entre bits et segments:
     --      0
-    --     ---  
+    --     ---
     --  5 |   | 1
     --     ---   <- 6
     --  4 |   | 2
     --     ---
-    --      3     
+    --      3
     --  point: bit 7
     --
     function hex_to_7seg(chiffre_hex: quartet) return segments is
@@ -94,23 +100,23 @@ package body utilitaires_inf3500_pkg is
             when x"F" => lessegments := "10001110"; -- F
             when others => lessegments := "01111111"; -- erreur, affichage éteint sauf le point (ne devrait pas se produire)
         end case;
-        
+
         return lessegments;
-    
+
     end;
-    
+
     -- fonction surchargée pour accepter une entrée de type signed
     function hex_to_7seg(chiffre_hex: quartet_signed) return segments is
     begin
         return hex_to_7seg(quartet(chiffre_hex));
     end;
-    
+
     -- fonction surchargée pour accepter une entrée de type unsigned
     function hex_to_7seg(chiffre_hex: quartet_unsigned) return segments is
     begin
         return hex_to_7seg(quartet(chiffre_hex));
     end;
-    
+
     -- fonction surchargée pour accepter une entrée de type BCD
     function BCD_to_7seg(chiffre_bcd: BCD) return segments is
     begin
@@ -122,12 +128,12 @@ package body utilitaires_inf3500_pkg is
     -- décodeur pour caractères ASCII vers affichage à 7 segments (8 bits incluant le point)
     -- correspondances entre bits et segments:
     --      0
-    --     ---  
+    --     ---
     --  5 |   | 1
     --     ---   <- 6
     --  4 |   | 2
     --     ---
-    --      3     
+    --      3
     --  point: bit 7
     --
     function character_to_7seg(caractere: character) return segments is
@@ -231,11 +237,23 @@ package body utilitaires_inf3500_pkg is
             when '~' => lessegments := "10111111";
             when others => lessegments := "01111111"; -- erreur, affichage éteint sauf le point (ne devrait pas se produire)
         end case;
-        
+
         return lessegments;
-    
+
     end;
-    
+
+    ------------------------------------------------------------------------------------------------
+    --
+    -- Conversion d'un caractère en un vecteur de 8 bits de type std_logic_vector
+    --
+    -- 1. character'pos(caractere) retourne le code ASCII du caractère dans un entier (ou un natural ?)
+    -- 2. on convertit ce code ASCII en un vecteur de bits de type unsigned
+    -- 3. on fait une conversion de type vers std_logic_vector
+    --
+    function character_to_std_logic_vector(caractere: character) return std_logic_vector is
+    begin
+        return std_logic_vector(to_unsigned(character'pos(caractere), 8));
+    end;
 
     ------------------------------------------------------------------------------------------------
     --
@@ -247,11 +265,11 @@ package body utilitaires_inf3500_pkg is
     function unsigned_to_BCD(nombre : unsigned(9 downto 0)) return BCD3 is
     variable n, c, d, u : natural := 0;
     begin
-        
+
         assert nombre < 1000 report "fonction unsigned_to_BCD, les nombres >= 1000 ne sont pas pris en charge" severity failure;
 
         n := to_integer(nombre);
-        
+
         c := 0;
         for centaines in 9 downto 1 loop
             if n >= centaines * 100 then
@@ -269,14 +287,14 @@ package body utilitaires_inf3500_pkg is
                 exit;
             end if;
         end loop;
-        
+
         u := n - d * 10;
-        
+
         return to_unsigned(c, 4) & to_unsigned(d, 4) & to_unsigned(u, 4);
 
-    end;    
-    
-    
+    end;
+
+
     ------------------------------------------------------------------------------------------------
     --
     -- obtenir le caractère ASCII correspondant à l'indice en encodage Base64
@@ -288,7 +306,7 @@ package body utilitaires_inf3500_pkg is
         if indice <= 25 then
             -- lettres majuscules, 'A' = x"41" = 65
             return character'val(65 + indice);
-        elsif indice <= 51 then           
+        elsif indice <= 51 then
             -- lettres minuscules, 'a' = x"61" = 97
             return character'val(97 + indice - 26);
         elsif indice <= 61 then
@@ -301,11 +319,11 @@ package body utilitaires_inf3500_pkg is
         end if;
     end;
 
-    
+
     ------------------------------------------------------------------------------------------------
     --
-    -- obtenir le caractère ASCII correspondant au quartet en entrée : {'0' à '9', 'a' à 'f'}
-    -- on choisit arbitrairement de prendre les lettres minuscules 'a' à 'f'
+    -- obtenir le caractère ASCII correspondant au quartet en entrée : {'0' à '9', 'A' à 'F'}
+    -- on choisit arbitrairement de prendre les lettres majuscules 'A' à 'F'
     --
     function hex_to_character(chiffre_hex: natural range 0 to 15) return character is
     begin
@@ -314,20 +332,55 @@ package body utilitaires_inf3500_pkg is
             return character'val(48 + chiffre_hex);
         else
             -- lettres minuscules, 'a' = x"61" = 97
-            return character'val(97 + chiffre_hex - 10);
+--            return character'val(97 + chiffre_hex - 10);
+            -- lettres majuscules, 'A' = x"41" = 65
+            return character'val(65 + chiffre_hex - 10);
         end if;
     end;
 
     ------------------------------------------------------------------------------------------------
     --
-    -- obtenir le caractère ASCII correspondant au quartet en entrée : {'0' à '9', 'a' à 'f'}
+    -- obtenir le caractère ASCII correspondant au quartet en entrée : {'0' à '9', 'A' à 'F'}
     --
     function hex_to_character(chiffre_hex: quartet_unsigned) return character is
     begin
         return hex_to_character(to_integer(chiffre_hex));
     end;
 
-    
+    ------------------------------------------------------------------------------------------------
+    --
+    -- obtenir nombre sur 4 bits correspondant au caractère entré {'0' à '9', 'A' à 'F'}
+    --
+    -- *TODO* : traiter les erreurs, soit un caractère qui ne correspond pas à un chiffre hexadécimal
+    -- on retourne arbitrairement 0 si le caractère ne correspond pas
+    --
+    function character_to_hex(c : character) return quartet_unsigned is
+    variable lequartet : quartet_unsigned;
+    begin
+        case c is
+            when '0' => lequartet := X"0";
+            when '1' => lequartet := X"1";
+            when '2' => lequartet := X"2";
+            when '3' => lequartet := X"3";
+            when '4' => lequartet := X"4";
+            when '5' => lequartet := X"5";
+            when '6' => lequartet := X"6";
+            when '7' => lequartet := X"7";
+            when '8' => lequartet := X"8";
+            when '9' => lequartet := X"9";
+            when 'A' => lequartet := X"A";
+            when 'B' => lequartet := X"B";
+            when 'C' => lequartet := X"C";
+            when 'D' => lequartet := X"D";
+            when 'E' => lequartet := X"E";
+            when 'F' => lequartet := X"F";
+            when others => lequartet := X"0"; -- valeur 0 par défaut *TODO : traiter l'erreur *
+        end case;
+
+        return lequartet;
+    end;
+
+
     ------------------------------------------------------------------------------------------------
     --
     -- convertir un boolean en std_logic
@@ -342,8 +395,8 @@ package body utilitaires_inf3500_pkg is
             return '0';
         end if;
     end;
-    
-    
+
+
     ------------------------------------------------------------------------------------------------
     --
     -- retourne le nombre de fois où la valeur v de type std_logic
@@ -359,6 +412,24 @@ package body utilitaires_inf3500_pkg is
             end if;
         end loop;
         return compte;
-    end;    
-    
+    end;
+
+
+    ------------------------------------------------------------------------------------------------
+    --
+    -- redimensionne une chaîne de caractères en la tronquant ou en lui ajoutant des caractères de remplissage
+    -- s : la chaîne
+    -- n : le nombre de caractères de la chaîne retournée
+    -- c : le caractère de remplissage
+    --
+    function resize(s : string; n : positive; c : character) return string is
+    variable remplissage : string(1 to n - s'length) := (others => c);
+    begin
+        if s'length <= n then
+            return s & remplissage;
+        else
+            return s(1 to n);
+        end if;
+    end;
+
 end;

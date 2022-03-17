@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
--- 
+--
 -- monopulseur.vhd
 --
 -- v. 1.0, 2022/01/19, Pierre Langlois
@@ -8,7 +8,7 @@
 -- https://www.eejournal.com/article/ultimate-guide-to-switch-debounce-part-1/
 --
 -- Gestion des rebonds des commutateurs activés par un humain et génération de mono-impulsion.
--- 
+--
 -- Le module a deux entrées :
 -- * une horloge qui doit nécessairement avoir une fréquence plus élevée que les mouvements humains,
 --   donc de l'ordre de 100 Hz ou plus,
@@ -17,7 +17,7 @@
 -- Le module a deux sorties :
 -- * impulsion_debut : une impulsion qui débute à la transition d'horloge qui suit le moment où le bouton est pesé,
 -- * impulsion_fin : une impulsion qui débute à la transition d'horloge qui suit le moment où le bouton est relâché.
--- 
+--
 -- Tout est configurable par des generics :
 -- * la polarité du bouton quand il est pesé
 -- * la durée de la période de rebond, en coups d'horloge
@@ -29,6 +29,7 @@
 --
 --
 -- TODO : généraliser pour un vecteur de boutons.
+-- TODO : ajouter la possibilité de générer un train d'impulsions si le bouton est pesé (une impulsion) puis gardé pesé
 --
 ---------------------------------------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ entity monopulseur is
         duree_rebond : positive := 10;                                      -- durée du rebond du bouton, en cycles d'horloge
         duree_impulsion : positive := 1                                     -- durée de l'impulsion de sortie, en cycles d'horloge
 --        N_boutons : positive := 1;                                        -- TODO
+--        delai_repetition;                                                 -- délai d'attente avant de générer un train d'impulsions parce que le bouton est gardé pesé, en cycles d'horloge
     );
     port (
         clk : in std_logic;                                                 -- l'horloge de référence
@@ -61,7 +63,7 @@ architecture arch of monopulseur is
     signal bouton_1, bouton_2 : std_logic;
 
 begin
-    
+
     -- double tampon pour réduire les probabilités de métastabilité avec l'entrée asynchrone
     process(all)
     begin
@@ -70,12 +72,12 @@ begin
             bouton_2 <= bouton_1;
         end if;
     end process;
-    
+
     with etat select
     impulsion_debut <=
         polarite_sortie_active when action_recue,
         not(polarite_sortie_active) when others;
-    
+
     with etat select
     impulsion_fin <=
         polarite_sortie_active when relache_recue,
@@ -113,13 +115,13 @@ begin
                     end if;
             end case;
         end if;
-    end process;    
-    
+    end process;
+
 end arch;
 
 
 ---------------------------------------------------------------------------------------------------
--- 
+--
 -- banc d'essai
 --
 -- v. 1.0, 2022-01-22, bien imparfaite et très incomplète
@@ -144,7 +146,7 @@ architecture arch of monopulseur_tb is
     signal bouton : std_logic;
     signal impulsion_debut : std_logic;
     signal impulsion_fin : std_logic;
-    
+
     constant periode : time := 10 ms; -- horloge de 100 Hz
 
 begin
@@ -163,5 +165,5 @@ begin
     bouton <=
         '0' after 0 ns, '1' after 11.7 ms, '0' after 24.7 ms, '1' after 34.7 ms, '0' after 44.7 ms, '1' after 57.7 ms,
         '0' after 102 ms, '1' after 115 ms, '0' after 125 ms, '1' after 135 ms, '0' after 145 ms;
-    
+
 end arch;

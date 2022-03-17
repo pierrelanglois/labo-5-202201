@@ -10,50 +10,60 @@ Membre #2 : **nom, prénom, matricule**
 
 ------------------------------------------------------------------------
 
-## Partie #1
+## Partie 1
 
-Voici quelques informations sur notre conception montrée dans notre fichier [racine_carree.vhd](sources/racine_carree.vhd) :
-- item 1
-- item 2
-- item 3
+### Diagramme de blocs du système
 
-## Partie #2
+Voici notre diagramme :
 
-Voici quelques informations sur notre banc d'essai dans notre fichier [racine_carree_tb.vhd](sources/racine_carree_tb.vhd) :
-- item 1
-- item 2
-- item 3
+<img src="figures/diagramme.png" alt="notre diagramme" width="600">
 
-## Partie #3
+### Description des modules
 
-**Faire un choix et garder seulement une option.**
-Nous utilisons la carte Basys 3.
-Nous utilisons la carte Nexys A7-50T.
-Nous utilisons la carte Nexys A7-100T.
+Voici, en un paragraphe pour chacun, le rôle et le fonctionnement de chacun des modules :
+- generateur_horloge_precis;
+- monopulseur;
+- uart_rx_char;
+- uart_tx_char;
+- uart_tx_message;
+- interface_utilisateur;
 
-Voici un lien vers notre fichier de configuration final : [top_labo_5.bit](synthese-implementation/top_labo_5.bit)
+### Analyse de quelques lignes de code
 
-Voici les ressources utilisées par notre système :
-Quoi | Slice LUTs | Slice Registers | F7 Muxes | F8 Muxes | Bonded IOB
---- | ---------- | --------------- | -------- | -------- | ------------
-module racine_carre seul | nombre?    | nombre?         | nombre?  | nombre?  | nombre?
-tout le système | nombre?    | nombre?         | nombre?  | nombre?  | nombre?
+Voici notre analyse des lignes de code VHDL suivantes.
 
-## Partie 4: Bonus
+`signal c1, c2 : character;`
+`signal r1, r2 : std_logic_vector(7 downto 0);`
+`...`
+`r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));`
+`c2 <= character'val(to_integer(unsigned(r2)));`
+
+La fonction `character_to_hex()` se trouve  ....
+
+
+## Partie 2
+
+Voici les modifications que nous avons apportées aux fichiers.
+
+* fichier1.vhd
+- ceci
+- cela
+
+* fichier2.vhd
+- ceci
+- cela
+
+* fichier3.vhd
+- ceci
+- cela
+
+
+## Partie 3 : Bonus
 
 *Faire un choix et garder seulement une option.*
 - Nous n'avons pas complété le bonus. Nous nous concentrons sur notre réussite dans ce cours et dans d'autres.
 - Nous sommes vraiment en avance dans nos études, dans ce cours et tous les autres, et nous adorons les défis dans ce cours, donc nous avons complété une ou plusieurs parties du bonus.
 
-### Partie 4a :
-
-Notre fichier [racine_carree.vhd](sources/racine_carree.vhd). contient des changements pour le calcul de la valeur initiale X<sub>0</sub>, aux lignes ... Nous avons choisi une approche basée sur ...
-
-### Partie 4b :
-
-Notre fichier [racine_carree.vhd](sources/racine_carree.vhd) contient des changements pour de la division.
-
-Nous avons utiliser un module différent décrit dans le fichier [votre-nom-de-fichier.vhd](sources/votre-nom-de-fichier.vhd). Notre approche consiste à ...
 
 ## Observations et discussion générale
 

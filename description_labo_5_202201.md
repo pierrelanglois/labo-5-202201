@@ -11,184 +11,142 @@
 
 ----------------------------------------------------------------------------------------------
 
-# Un titre intelligent ici
+# Communications sérielles avec un processeur
 
 ----------------------------------------------------------------------------------------------
 
-À la fin de ce laboratoire, vous devrez être capable de :
+Le but de ce laboratoire est de démontrer la possibilité de communiquer entre un ordinateur et un processeur implémenté sur une carte FPGA.
 
-- Concevoir et modéliser en VHDL un chemin des données qui réalise des fonctions arithmétiques et logiques complexes au niveau du transfert entre registres (_Register Transfer Level_ – RTL). (B5)
-    - Instancier des registres, dont des compteurs
-    - Implémenter les fonctions arithmétiques et logiques pour les valeurs des registres, correspondant à une spécification par micro-opérations ou par pseudocode
-- Composer un banc d’essai pour stimuler un modèle VHDL d’un chemin des données. (B5)
-    - Générer un signal d'horloge et un signal de réinitialisation
-    - Générer et appliquer des stimuli à un circuit séquentiel
-    - Comparer les sorties du circuit à des réponses attendues pré-calculées
-    - Utiliser des énoncés `assert` ou des conditions pour vérifier le module
-    - Générer un chronogramme résultant de l’exécution du banc d’essai, et l'utiliser pour déboguer le circuit, entre autres pour résoudre les problèmes de synchronisation
+À la fin de ce laboratoire, vous devrez être capable de :
 - Implémenter un chemin des données sur un FPGA
-    - Effectuer la synthèse et l'implémentation du circuit
-    - Extraire, analyser et interpréter des métriques de coût d'implémentation
-    - Programmer le FPGA et vérifier le fonctionnement correct du circuit avec les interfaces de la planchette
-    - Communiquer avec le circuit via l'interface série d'un ordinateur
+- Effectuer la synthèse et l'implémentation du circuit
+- Programmer le FPGA et vérifier le fonctionnement correct du circuit avec les interfaces de la planchette
+- Communiquer avec le chemin des données via l'interface série d'un ordinateur
+- Décortiquer un code composé de plusieurs modules décrits dans plusieurs fichiers
 
 Ce laboratoire s'appuie principalement sur le matériel suivant :
-1. Les procédures utilisées et les habiletés développées dans les laboratoires #1, #2 et #3.
+1. Les procédures utilisées et les habiletés développées dans les laboratoires #1 à #4.
 2. La matière des cours des semaines 4 (Modélisation et vérification de circuits séquentiels), 5 (Conception de chemins des données) et 6 (Conception et implémentation de fonctions arithmétiques sur FPGA).
 
 ## Partie 0 : Introduction
 
-### Préparatifs
+### Communications série
 
-- Créez un répertoire "inf3500\labo4\" dans lequel vous mettrez tous les fichiers de ce laboratoire.
-- Importez tous les fichiers du laboratoire à partir de l'entrepôt Git et placez-les dans votre répertoire \labo4\.
+Dans cet exercice de laboratoire, on exploite la communication série entre un ordinateur et la carte de développement à FPGA, ce qui simplifie grandement l'interface avec un être humain.
 
-### Vue d'ensemble
+La communication série (un bit à la fois) avec la carte et le FPGA qui s'y trouve se fait par l'entremise du même câble qui sert aussi pour l'alimentation de la carte et pour la programmation du FPGA. Du côté de l'ordinateur, on utilise un port COM. Pour les ordinateurs contemporains et la plupart des ordinateurs portables, ce port COM est physiquement relié à un port USB.
 
-Dans cet exercice de laboratoire, on considère le problème de la conception d'un module qui calcule la racine carrée X d'un nombre A, (A = X &times; X). Ce module pourrait être ajouté à un microprocesseur pour en augmenter le jeu d'instructions.
+De chaque côté de la communication série, on utilise un dispositif appelé [Universal Asynchronous Receiver Transmitter (UART)](https://fr.wikipedia.org/wiki/UART). Les UART communiquent entre eux par deux fils, chacun permettant de transmettre vers ou bien recevoir de l'autre UART. Les signaux sur ces files respectent [une norme comme la RS-232](https://fr.wikipedia.org/wiki/RS-232). 
 
-La figure suivante illustre l'interface du module avec le monde extérieur. Les différents ports du module sont comme suit :
-- Le nombre `A` est un entier non signé (nécessairement positif) exprimé avec N bits.
-- La racine carrée `X` est un nombre qui pourrait être fractionnaire, exprimé avec M bits : N / 2 bits pour la partie entière et (M - N / 2) bits pour la partie fractionnaire.
-- Les calculs sont lancés quand le signal `go` a la valeur '1' lors d'une transition positive du signal d'horloge `clk`. Le signal `fini` prend alors la valeur '0'.
-- Le signal `fini` prend la valeur '1' quand les calculs sont terminés, indiquant que le port `X` représente alors la racine carrée de `A`.
-- Le module est réinitialisé quand on place un '1' sur le port `reset`.
+Les cartes Basys 3 et Nexys A7 ont des puces qui font le pont entre les connecteurs de la carte et des pattes spécifiques du FPGA (sur la Basys 3, ce sont A18 pour transmettre vers l'ordinateur, et B18 pour recevoir de l'ordinateur). Ces puces respectent la norme RS-232.
 
-<img src="figures/racine-carree-module.svg" alt="module pour calculer la racine carrée" width="600">
+### Installer et configurer un outil de communications série sur votre ordinateur
 
-### Calcul de la racine carrée par la méthode itérative de Newton
+Vous aurez besoin d'un utilitaire de communications série sur votre ordinateur.
 
-On peut calculer la racine carrée X = sqrt(A) d'un nombre A par [la méthode itérative de Newton](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Newton#Racine_carr%C3%A9e).
+Un [bon utilitaire gratuit pour Windows est PuTTY](https://putty.org/). Des [versions pour Linux et pour Mac](https://www.ssh.com/academy/ssh/putty), sont disponibles en ligne mais n'ont pas été testées pour ce laboratoire.
 
-À chaque itération k, on calcule : X<sub>k+1</sub> = (X<sub>k</sub> + A / X<sub>k</sub>) / 2, et la valeur de Xk converge vers X = sqrt(A) après quelques itérations.
+Sous Windows, vous devez d'abord établir quel port COM utiliser. Voici un exemple pour lequel le port est COM4. *Vous devez choisir le port COM qui correspond à votre situation.*
 
-Par exemple, pour A = 42871 et X<sub>0</sub> = 255, on obtiendrait la séquence montrée au tableau suivant en effectuant la division à l'aide d'une calculatrice et en arrondissant les Xk à l'entier le plus proche à chaque étape. La valeur finale après trois itérations, 207, est très proche de la racine carrée qui est ~207.0531.
+<img src="figures/windows-gestionnaire-peripheriques-ports-com.png" alt="port COM sous Windows" width="600">
 
-k | X<sub>k</sub>
----- | ------
-0 | 255
-1 | 212
-2 | 207
+Configurez ensuite PuTTY comme suit :
 
-En pratique, et quand on n'a pas accès à une calculatrice, il y a plusieurs considérations à prendre en compte pour implémenter ces calculs avec un chemin des données :
-- quelle précision choisir (combien de bits) pour représenter les calculs intermédiaires à l'intérieur du module;
-- quelle valeur choisir pour X<sub>0</sub>; et,
-- comment implémenter la division.
+<table>
+<tr>
+<td><img src="figures/putty-config-session.png" alt="config PuTTY : Session" width="600"></td>
+<td><img src="figures/putty-config-terminal.png" alt="config PuTTY : Terminal" width="600"></td>
+</tr>
+<tr>
+<td><img src="figures/putty-config-translation.png" alt="config PuTTY : Translation" width="600"></td>
+<td><img src="figures/putty-config-serial.png" alt="config PuTTY : Serial" width="600"></td>
+</tr>
+</table>
 
-### Pseudocode et micro-opérations
+Dans la fenêtre pour "Session", vous pouvez sauvegarder vos paramètres avec le bouton Save, avec un nom représentatif comme "Basys3", "FPGA", ou "INF3500-est-mon-cours-prefere".
 
-Le calcul de la racine carrée par la méthode itérative de Newton peut se modéliser avec le pseudocode et les micro-opérations suivantes. Ce pseudocode décrit une machine à états à deux états : {attente, calculs}.
+Cliquez sur le bouton "Open" pour lancer une session. À partir de ce moment, tous les caractères  tapés dans la fenêtre de terminal sont envoyés sur le port COM spécifié. Comme on a choisi l'option "Force on" sous "Local echo", ces caractères apparaissent aussi à l'écran. Tous les caractères reçus sur le port COM sont aussi affichés dans la fenêtre.
 
-    si reset == '1' {
-        etat ← "attente";
-    } sinon, répéter à chaque coup d'horloge {
-        dans le cas où etat == "attente" {
-            si go = '1' alors {
-                k ← 0;
-                A_int ← A;
-                xk ← 255; -- la valeur X<sub>255</sub> est valide pour les cas où A est dans l'intervalle [0, 65535]
-                etat ← "calculs";
-            }
-        }
-        dans le cas où etat == "calculs" {
-            fini ← 0;
-            xk ← (xk + A / xk) / 2;
-            k ← k + 1;
-            si k = kmax alors {
-                etat ← "attente";
-            }
-        }
-    }
-    X ← xk;
-    si etat = "attente" {
-        fini ← 1;
-    } sinon {
-        fini ← 0;
-    }
+## Le code ASCII
 
-### Implémentation de la division
+Les communications série entre l'ordinateur (via l'utilitaire PuTTY) et la carte se font par échange de caractères encodés en ASCII. [Le code ASCII](https://www.asciitable.com/) correspond au type `character` de VHDL. Ainsi, la cloche, la lettre 'A' et la lettre 'a' sont respectivement représentées par les code hexadécimaux 07h, 41h et 61h.
 
-La division générale n'est pas prise en charge par les outils de synthèse. Les diapositives de la semaine #6 présentent trois techniques synthétisables pour calculer la division générale. Pour ce laboratoire, on vous fournit un module de division générale par la technique de la réciproque dans le fichier [division_par_reciproque.vhd](sources/division_par_reciproque.vhd). Ce module est similaire à celui présenté dans les diapositives de la semaine #6.
+### Implémentation des fichiers de démonstration du laboratoire
 
-Inspectez le code et les explications dans les diapositives pour en comprendre le fonctionnement.
+Suivez les étapes suivantes :
+- Créez un répertoire "inf3500\labo5\" dans lequel vous mettrez tous les fichiers de ce laboratoire.
+- Importez tous les fichiers du laboratoire à partir de l'entrepôt Git et placez-les dans votre répertoire \labo5\.
+- Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](labo_5_synth_impl.tcl).
+- Lancez PuTTY ou votre programme de communications série et configurez-le tel que montré dans la partie 0.
 
-Pour ce laboratoire, une valeur de W_frac de 14 bits semble produire de bons résultats. Vous pouvez expérimenter avec cette valeur et voir l'effet sur la précision des calculs et les coûts d'implémentation.
+Placez le commutateur 0 en position vers le haut (1) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY.
 
-## Partie 1 : conception du module de racine carrée et modélisation en VHDL
+Placez le commutateur en position vers le bas (0) et observez ce qui se passe sur la carte.
 
-Complétez la modélisation du module de la racine carrée donné dans le fichier [racine_carree.vhd](sources/racine_carree.vhd).
+## Partie 1 : analyse du code
 
-Pour les besoins de ce laboratoire, vous devriez choisir `N` = 16, `M` = 8, `kmax` = 10, et `W_frac` = 14.
+### Diagramme de blocs du système
 
-*Attention* : VHDL étant VHDL, le plus grand défi est peut-être dans le codage de l'opération xk ← (xk + A / xk) / 2.
-- La division A / xk doit être produite par le module [division_par_reciproque.vhd](sources/division_par_reciproque.vhd) ou par un module de votre conception. Attention, ce module retourne un quotient sur 32 bits : 16 bits de partie entière et 14 bits de partie fractionnaire. Il faut enlever la partie fractionnaire et ne garder que les 8 bits les moins significatifs de la partie entière. Recommandation : faites-vous plusieurs exemples sur papier pour bien comprendre.
-- L'addition de deux nombres de M bits produit une somme de M + 1 bits. Il faut calculer cette somme, la diviser par 2 selon l'opération, puis ramener la somme à M bits. Encore une fois, faites-vous des exemples sur papier. La fonction `RESIZE (ARG: UNSIGNED; NEW_SIZE: NATURAL) return UNSIGNED;` du package [numeric.std](https://www.csee.umbc.edu/portal/help/VHDL/numeric_std.vhdl) peut simplifier l'écriture du code.
+Produisez un diagramme de blocs du système au complet.
 
-À remettre pour la partie 1 : votre fichier modifié et une brève explication de vos modifications dans le fichier [rapport.md](rapport.md);
+Votre diagramme doit inclure chaque instance de chaque entité, montrer ses ports d'entrée et de sortie, et à quoi ces ports sont reliés. Les ports peuvent reliés à des pattes du FPGA (dans le cas du module top_labo_5), ou à des ports d'autres modules.
 
-## Partie 2 : banc d'essai
+Vous pouvez utiliser un programme pour faire des schémas ou faire un diagramme à la main et le numériser. Si vous remettez une numérisation, assurez-vous qu'elle soit de très bonne qualité, que le diagramme soit clair, que l'éclairage soit uniforme et que le diagramme soit droit. Si vous prenez une photo, assurez-vous que l'appareil soit au-dessus du dessin et dans le même plan que celui-ci.
 
-Vérifiez le fonctionnement de votre module [racine_carree.vhd](sources/racine_carree.vhd) à l'aide du banc d'essai du fichier [racine_carree_tb.vhd](sources/racine_carree_tb.vhd).
+### Description des modules
 
-Bonifiez le banc d'essai pour bien vérifier le fonctionnement de votre module. Commencez par vérifier quelques cas seulement. Il faut appliquer un nombre au port `A`, activer le signal `go`, attendre le bon nombre de coups d'horloge, puis inspecter la réponse.
+Décrivez en un paragraphe le rôle et le fonctionnement de chacun des modules suivant :
+- generateur_horloge_precis;
+- monopulseur;
+- uart_rx_char;
+- uart_tx_char;
+- uart_tx_message;
+- interface_utilisateur;
 
-Idéalement, votre banc d'essai ferait une stimulation exhaustive (avec tous les cas possibles de A) et calculerait l'erreur de votre module dans chaque cas. Quelle est l'erreur maximale ? L'erreur moyenne ?
+### Analyse de quelques lignes de code
 
-À remettre pour la partie 2 : votre banc d'essai modifié et une brève explication des vérifications effectuées par votre banc d'essai dans le fichier [rapport.md](rapport.md);
+Expliquez ce que font les lignes de code VHDL suivantes et décortiquez chacune des opérations réalisées.
 
-## Partie 3 : implémentation sur la carte
+`signal c1, c2 : character;`
+`signal r1, r2 : std_logic_vector(7 downto 0);`
+`...`
+`r1 <= std_logic_vector(to_unsigned(character'pos(c1), 8));`
+`c2 <= character'val(to_integer(unsigned(r2)));`
 
-Les fichiers suivants sont fournis pour aider à contrôler les interfaces de la carte et faire l'implémentation dans le FPGA. Ne les modifiez pas.
-- [utilitaires_inf3500_pkg.vhd](sources/utilitaires_inf3500_pkg.vhd) : pour regrouper un ensemble de fonctions utiles pour les laboratoires du cours;
-- [generateur_horloge_precis.vhd](sources/generateur_horloge_precis.vhd) : pour générer une horloge à une fréquence désirée à partir de l'horloge de la carte;
-- [monopulseur.vhd](sources/monopulseur.vhd) : pour synchroniser les actions des humains avec l'horloge du système;
-- [top_labo_4.vhd](sources/top_labo_4.vhd) : pour regrouper tous les fichiers lors de l'implémentation;
-- [basys_3_top.xdc](xdc/basys_3_top.xdc), [nexys_a7_50t_top.xdc](xdc/nexys_a7_50t_top.xdc) et [nexys_a7_100t_top.xdc](xdc/nexys_a7_100t_top.xdc) : trois fichiers correspondant à trois cartes de développement différentes, pour établir des liens entre des identificateurs et des pattes du FPGA; et,
-- [labo_4_synth_impl.tcl](synthese-implementation/labo_4_synth_impl.tcl) : pour regrouper les commandes à utiliser pour faire l'implémentation.
+Où se trouve la fonction `character_to_hex()` ?
 
-Inspectez le contenu du fichier [top_labo_4.vhd](sources/top_labo_4.vhd) pour connaître le pairage entre les ports de l'entité `racine_carree` et les périphériques d'entrées et de sortie de la carte : 
-- Le port `reset` est relié au bouton du centre;
-- Le port `go` est relié au bouton de droite;
-- Les commutateurs permettent d'entrer le nombre A dont on cherche la racine carrée.
-- Les boutons contrôlent ce qui est affiché.
-- Le port `fini` est relié à la LED (0).
-- La sortie X est reliée à l'affichage quadruple à 7 segments.
+### À remettre
 
-Faites la synthèse et l'implémentation de votre module pour votre carte. Vérifiez-en le fonctionnement.
+À remettre pour la partie 1 : votre diagramme, votre description et vos réponses dans le fichier [rapport.md](rapport.md);
 
-Vous pouvez expérimenter avec la fréquence d'horloge si vous voulez observer les étapes intermédiaires de calcul.
+## Partie 2 : remplacer le processeur par votre module de la racine carrée
 
-À remettre pour la partie #3 :
-- votre fichier de configuration final : [labo_4.bit](synthese-implementation/labo_4.bit);
-- le nombre de ressources du FPGA utilisées par votre module (racine_carree.vhd seulement);
-- le nombre de ressources du FPGA utilisées par votre système au complet (racine_carree.vhd seulement);
+Modifiez le code pour remplacer le processeur qui calcule le PGFC par votre module qui calcule la racine carrée, développé au laboratoire précédent.
 
-## Partie 4: Bonus
+Si votre module de racine carrée ne fonctionne pas, vous pouvez emprunter, avec leur accord explicite, le code d'une autre équipe sans pénalité. Expliquez complètement la situation dans votre rapport. Discutez-en avec le chargé de laboratoire aussi.
+
+Remettez vos fichiers modifiés, minutieusement commentés, et vos explications [dans votre rapport](rapport.md);
+
+Remettez aussi votre fichier de configuration final : [labo_5.bit](synthese-implementation/labo_5.bit).
+
+## Partie 3: Bonus
 
 **Mise en garde**. *Compléter correctement les parties 1 et 2 peut donner une note de 17 / 20 (85%), ce qui peut normalement être interprété comme un A. La partie bonus demande du travail supplémentaire qui sort normalement des attentes du cours. Il n'est pas nécessaire de la compléter pour réussir le cours ni pour obtenir une bonne note. Il n'est pas recommandé de s'y attaquer si vous éprouvez des difficultés dans un autre cours. La partie bonus propose un défi supplémentaire pour les personnes qui souhaitent s'investir davantage dans le cours INF3500 en toute connaissance de cause.*
 
-### 4a. Une meilleure estimation de X<sub>0</sub>
+### 3a. contrôle des erreurs à l'entrée
 
-On peut réduire de moitié le nombre d'itérations nécessaires pour que l'algorithme converge en choisissant une meilleure valeur de X<sub>0</sub> pour lancer l'algorithme. Pour N = 16 (avec A dans l'intervalle [0, 65535], de bonnes valeurs de départ X<sub>0</sub> sont données au tableau suivant : 
+Modifiez le module interface.vhd pour qu'il traite correctement les entrées incorrectes, c'est à dire les caractères autres que {0 à 9} et {'A' à 'F'}.
 
-A | X<sub>0</sub>
----- | ------
-&gt; 16384 | 255
-&gt; 4096 | 128
-&gt; 1024 | 64
-&gt; 256 | 32
-&gt; 64 | 16
-&le; 64 | 8
+Dans ce cas, l'interface doit afficher un message d'erreur à la console et demander une nouvelle entrée.
 
-Modifiez votre module pour choisir une meilleure valeur de X<sub>0</sub>. Expérimentez avec des valeurs réduites du nombre d'itérations pour voir l'effet.
+Expliquez clairement tous vos changements dans le code et dans votre rapport.
 
-Donnez vos observations dans votre rapport.
+### 3b. affichage des résultats sur PuTTY
 
-### 4b. Modifier l'approche pour effectuer la division
+Modifiez le module d'interface pour que les résultats soient aussi affichés sur le terminal PuTTY.
 
-Proposez une autre manière d'implémenter la division et faites-en l'essai dans votre module. Vous pouvez vous inspirez des notes de cours, en particulier l'algorithme de Goldschmidt, ou proposer votre propre méthode.
+Expliquez clairement tous vos changements dans le code et dans votre rapport.
 
-Expliquez vos changements et vos observations dans votre rapport.
 
 ## Remise
 
@@ -207,12 +165,12 @@ Le barème de correction est progressif. Il est relativement facile d'obtenir un
 
 Critères | Points
 -------- | ------
-Partie 1 : Spécifications de base | 8
-Partie 2 : Spécifications avancées | 7
+Partie 1 : Analyse du code | 6
+Partie 2 : Avec votre module de la racine carrée | 9
 Qualité, lisibilité et élégance du code : alignement, choix des identificateurs, qualité et pertinence des commentaires, respect des consignes de remise incluant les noms des fichiers, orthographe, etc. | 2
 **Pleine réussite du labo** | **17**
-Bonus partie 3a. Meilleure valeur de départ X<sub>0</sub> | 2
-Bonus partie 3b. Division modifiée | 1
+Bonus partie 3a., contrôle des erreurs | 2
+Bonus partie 3b., affichage des résultats sur le terminal | 1
 **Maximum possible sur 20 points** | **20**
 
 

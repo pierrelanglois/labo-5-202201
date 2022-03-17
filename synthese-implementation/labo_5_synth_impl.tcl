@@ -22,8 +22,10 @@ remove_files [get_files]
 read_vhdl -vhdl2008 ../sources/utilitaires_inf3500_pkg.vhd
 read_vhdl -vhdl2008 ../sources/generateur_horloge_precis.vhd
 read_vhdl -vhdl2008 ../sources/monopulseur.vhd
-read_vhdl -vhdl2008 ../sources/division_par_reciproque.vhd
-read_vhdl -vhdl2008 ../sources/racine_carree.vhd
+read_vhdl -vhdl2008 ../sources/UART_TX.vhd
+read_vhdl -vhdl2008 ../sources/messages_pkg.vhd
+#read_vhdl -vhdl2008 ../sources/division_par_reciproque.vhd
+#read_vhdl -vhdl2008 ../sources/racine_carree.vhd
 read_vhdl -vhdl2008 ../sources/top_labo_5.vhd
 
 # lecture du fichier de contraintes xdc; choisir la ligne qui correspond à votre carte
@@ -49,7 +51,7 @@ connect_hw_server
 get_hw_targets
 open_hw_target
 
-# chosir les trois lignes qui correpondent à votre carte
+# choisir les trois lignes qui correspondent à votre carte
 current_hw_device [get_hw_devices xc7a35t_0]
 set_property PROGRAM.FILE {top_labo_5.bit} [get_hw_devices xc7a35t_0]
 program_hw_devices [get_hw_devices xc7a35t_0]
