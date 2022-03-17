@@ -79,9 +79,11 @@ Suivez les étapes suivantes :
 - Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](synthese-implementation/labo_5_synth_impl.tcl).
 - Lancez PuTTY ou votre programme de communications série et configurez-le tel que montré dans la partie 0.
 
+Le processeur modélisé [dans le fichier PGFC3.vhd](sources/PGFC3.vhd) implémente le calcul itératif du plus grand facteur commun. C'est un problème jouet qui sert uniquement de prétexte à exerces les interfaces séries entre l'ordinateur et la carte FPGA.
+
 Placez le commutateur 0 en position vers le haut (1) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY.
 
-Placez le commutateur en position vers le bas (0) et observez ce qui se passe sur la carte.
+Placez le commutateur en position vers le bas (0) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY..
 
 ## Partie 1 : analyse du code
 
@@ -89,13 +91,13 @@ Placez le commutateur en position vers le bas (0) et observez ce qui se passe su
 
 Produisez un diagramme de blocs du système au complet.
 
-Votre diagramme doit inclure chaque instance de chaque entité, montrer ses ports d'entrée et de sortie, et à quoi ces ports sont reliés. Les ports peuvent reliés à des pattes du FPGA (dans le cas du module top_labo_5), ou à des ports d'autres modules.
+Votre diagramme doit inclure chaque instance de chaque entité avec son nom, montrer et identifier ses ports d'entrée et de sortie, et à quoi ces ports sont reliés. Évitez les spaghettis svp. Les ports peuvent reliés à des pattes du FPGA (dans le cas du module top_labo_5), ou à des ports d'autres modules.
 
 Vous pouvez utiliser un programme pour faire des schémas ou faire un diagramme à la main et le numériser. Si vous remettez une numérisation, assurez-vous qu'elle soit de très bonne qualité, que le diagramme soit clair, que l'éclairage soit uniforme et que le diagramme soit droit. Si vous prenez une photo, assurez-vous que l'appareil soit au-dessus du dessin et dans le même plan que celui-ci.
 
 ### Description des modules
 
-Décrivez en un paragraphe le rôle et le fonctionnement de chacun des modules suivant :
+Décrivez en un paragraphe chacun le rôle et le fonctionnement des modules suivants :
 - generateur_horloge_precis;
 - monopulseur;
 - uart_rx_char;
