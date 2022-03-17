@@ -22,10 +22,11 @@ remove_files [get_files]
 read_vhdl -vhdl2008 ../sources/utilitaires_inf3500_pkg.vhd
 read_vhdl -vhdl2008 ../sources/generateur_horloge_precis.vhd
 read_vhdl -vhdl2008 ../sources/monopulseur.vhd
-read_vhdl -vhdl2008 ../sources/UART_TX.vhd
-read_vhdl -vhdl2008 ../sources/messages_pkg.vhd
-#read_vhdl -vhdl2008 ../sources/division_par_reciproque.vhd
-#read_vhdl -vhdl2008 ../sources/racine_carree.vhd
+read_vhdl -vhdl2008 ../sources/interface_utilisateur.vhd
+read_vhdl -vhdl2008 ../sources/PGFC3.vhd
+read_vhdl -vhdl2008 ../sources/uart_tx_char.vhd
+read_vhdl -vhdl2008 ../sources/uart_tx_message.vhd
+read_vhdl -vhdl2008 ../sources/uart_rx_char.vhd
 read_vhdl -vhdl2008 ../sources/top_labo_5.vhd
 
 # lecture du fichier de contraintes xdc; choisir la ligne qui correspond à votre carte
