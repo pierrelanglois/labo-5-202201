@@ -30,14 +30,14 @@ read_vhdl -vhdl2008 ../sources/uart_rx_char.vhd
 read_vhdl -vhdl2008 ../sources/top_labo_5.vhd
 
 # lecture du fichier de contraintes xdc; choisir la ligne qui correspond à votre carte
-read_xdc ../xdc/basys_3_top.xdc
+#read_xdc ../xdc/basys_3_top.xdc
 #read_xdc ../xdc/nexys_a7_50t_top.xdc
-#read_xdc ../xdc/nexys_a7_100t_top.xdc
+read_xdc ../xdc/nexys_a7_100t_top.xdc
 
 # synthèse - choisir la ligne qui correspond à votre carte
-synth_design -top top_labo_5 -part xc7a35tcpg236-1 -assert
+#synth_design -top top_labo_5 -part xc7a35tcpg236-1 -assert
 #synth_design -top top_labo_5 -part xC7a50TCSG324 -assert
-#synth_design -top top_labo_5 -part xC7a100TCSG324 -assert
+synth_design -top top_labo_5 -part xC7a100TCSG324 -assert
 
 # implémentation (placement et routage)
 place_design
@@ -53,14 +53,14 @@ get_hw_targets
 open_hw_target
 
 # choisir les trois lignes qui correspondent à votre carte
-current_hw_device [get_hw_devices xc7a35t_0]
-set_property PROGRAM.FILE {top_labo_5.bit} [get_hw_devices xc7a35t_0]
-program_hw_devices [get_hw_devices xc7a35t_0]
+#current_hw_device [get_hw_devices xc7a35t_0]
+#set_property PROGRAM.FILE {top_labo_5.bit} [get_hw_devices xc7a35t_0]
+#program_hw_devices [get_hw_devices xc7a35t_0]
 
 #current_hw_device [get_hw_devices xc7a50t_0]
 #set_property PROGRAM.FILE {top_labo_5.bit} [get_hw_devices xc7a50t_0]
 #program_hw_devices [get_hw_devices xc7a50t_0]
 
-#current_hw_device [get_hw_devices xc7a100t_0]
-#set_property PROGRAM.FILE {top_labo_5.bit} [get_hw_devices xc7a100t_0]
-#program_hw_devices [get_hw_devices xc7a100t_0]
+current_hw_device [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {top_labo_5.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]

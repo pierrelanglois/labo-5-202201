@@ -26,15 +26,19 @@ entity top_labo_5 is
         btnL : in  std_logic;                      -- bouton de gauche
         btnR : in  std_logic;                      -- bouton de droite
         btnD : in  std_logic;                      -- bouton du bas
-        RsRx : in  std_logic;                      -- interface USB-RS-232 réception
-        RsTx : out std_logic                       -- interface USB-RS-232 transmission
+        -- RsRx : in  std_logic;                      -- interface USB-RS-232 réception
+        -- RsTx : out std_logic                       -- interface USB-RS-232 transmission
+        UART_TXD_IN : in std_logic;                -- pour carte Nexys A7 100T, patte C4, réception RS232 (du point du vue du FPGA), voir le manuel de l'utilisateur
+        UART_RXD_OUT : out std_logic               -- pour carte Nexys A7 100T, patte D4, transmission RS232 (du point du vue du FPGA), voir le manuel de l'utilisateur
     );
 end;
 
 architecture arch of top_labo_5 is
 
+    signal RsRx, RsTx : std_logic;  -- signaux internes quand on utilise la Nexys A7, qui a une nomenclature différente pour les ports UART
+
     signal reset : std_logic;
-    signal clk_1_MHz, clk_2_Hz : std_logic;
+    signal clk_1_MHz : std_logic;
 
     signal symboles : quatre_symboles;
 
@@ -51,9 +55,14 @@ architecture arch of top_labo_5 is
 
 begin
 
+    -- pairage des ports UART pour la carte Nexy A7 seulement
+    -- commenter ces lignes pour la carte Basys 3
+    RsRx         <= UART_TXD_IN;
+    UART_RXD_OUT <= RsTx;
+
     -- génération des horloges du circuit à partir de l'horloge à 100 MHz de la carte
     gen_horloge_1_MHz : entity generateur_horloge_precis(arch) generic map (100e6, 1e6) port map (clk, clk_1_MHz);
-    gen_horloge_2_Hz  : entity generateur_horloge_precis(arch) generic map (100e6,   2) port map (clk, clk_2_Hz);
+--    gen_horloge_2_Hz  : entity generateur_horloge_precis(arch) generic map (100e6,   2) port map (clk, clk_2_Hz);
 
     -- stabilisation et synchronisation des boutons avec l'horloge du circuit, on suppose une durée de rebond de 5 ms
     -- on prend une horloge de référence de 1 MHz pour avoir une impulsion qui dure 1 microseconde

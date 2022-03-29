@@ -4,6 +4,14 @@
 --
 -- v. 1.0 Pierre Langlois 2022-03-16 pour le labo #5, INF3500
 --
+-- TODO : comme les états sont très semblables, on pourrait les paramétrer selon quelques catégories, et utiliser une machine
+-- générale pour les parcourir. La machine lirait les paramètres et les appliquerait.
+-- 		message ou non, le message ou un pointeur
+-- 		entrée ou non
+-- 		pause ou non
+-- 		prochain état
+-- 		etc.
+--
 ---------------------------------------------------------------------------------------------------
 
 library IEEE;

@@ -79,13 +79,13 @@ Suivez les étapes suivantes :
 - Faites la synthèse et l'implémentation des fichiers fournis à l'aide des commandes contenues dans le fichier [labo_5_synth_impl.tcl](synthese-implementation/labo_5_synth_impl.tcl).
 - Lancez PuTTY ou votre programme de communications série et configurez-le tel que montré dans la partie 0.
 
-Le processeur modélisé [dans le fichier PGFC3.vhd](sources/PGFC3.vhd) implémente le calcul itératif du plus grand facteur commun. C'est un problème jouet qui sert uniquement de prétexte à exerces les interfaces séries entre l'ordinateur et la carte FPGA.
+Le processeur modélisé [dans le fichier PGFC3.vhd](sources/PGFC3.vhd) implémente le calcul itératif du plus grand facteur commun. C'est un problème jouet qui sert uniquement de prétexte à exercer les interfaces séries entre l'ordinateur et la carte FPGA.
 
 Placez le commutateur 0 en position vers le haut (1) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY.
 
-Placez le commutateur en position vers le bas (0) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY..
+Placez le commutateur en position vers le bas (0) et observez ce qui se passe sur la carte quand vous entrez des chiffres dans la fenêtre de PuTTY.
 
-## Partie 1 : analyse du code
+## Partie 1 : Analyse du code
 
 ### Diagramme de blocs du système
 
@@ -123,7 +123,7 @@ Où se trouve la définition de la fonction `character_to_hex()` ?
 
 À remettre pour la partie 1 : votre diagramme, votre description et vos réponses dans le fichier [rapport.md](rapport.md);
 
-## Partie 2 : remplacer le processeur par votre module de la racine carrée
+## Partie 2 : Remplacer le processeur par votre module de la racine carrée
 
 Modifiez le code pour remplacer le processeur qui calcule le PGFC par votre module qui calcule la racine carrée, développé au laboratoire précédent.
 
